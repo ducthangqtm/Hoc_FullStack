@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Trang Quản Trị Network - Thang ND</title>
+
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <nav class="navbar navbar-dark bg-dark">
+      <div class="container-fluid">
+        <span class="navbar-brand mb-0 h1">Hệ Thống Quản Lý IT</span>
+      </div>
+    </nav>
+
+    <div class="container mt-5">
+      <div class="row">
+        <div class="col-md-4">
+          <div class="card text-white bg-primary mb-3">
+            <div class="card-header">Thiết bị Online</div>
+            <div class="card-body">
+              <h5 class="card-title">12 Thiết bị</h5>
+              <p class="card-text">Hệ thống hoạt động ổn định.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-8">
+          <div class="d-flex justify-content-between align-items-center">
+            <h3>Danh sách Router/Switch</h3>
+            <span class="badge bg-secondary"
+              >Cập nhật lúc: {{ update_time }}</span
+            >
+          </div>
+
+          <meta http-equiv="refresh" content="30" />
+          <table class="table table-striped border mt-3">
+            <thead class="table-dark">
+              <tr>
+                <th>Tên</th>
+                <th>IP Address</th>
+                <th>Hành động</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for server in servers %}
+              <tr>
+                <td>{{ server.name }}</td>
+                <td>{{ server.ip }}</td>
+                <td>
+                  {% if server.status == "Online" %}
+                  <span class="badge bg-success">Online</span>
+                  {% else %}
+                  <span class="badge bg-danger">Offline</span>
+                  {% endif %}
+                  <button
+                    onclick="checkPing('{{ server.name }}', '{{ server.ip }}')"
+                    class="btn btn-sm btn-info text-white ms-2"
+                  >
+                    Ping lại
+                  </button>
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+      async function checkPing(deviceName, ip) {
+        console.log("Đang kiểm tra: " + deviceName);
+
+        // Tìm hàng (row) tương ứng với IP này để cập nhật hiệu ứng
+        alert(
+          "Đang gửi lệnh Ping thực tế đến " +
+            ip +
+            "... Vui lòng đợi trong giây lát.",
+        );
+
+        try {
+          const response = await fetch("/api/ping/" + ip);
+          const data = await response.json();
+
+          alert(
+            "Kết quả cho " +
+              deviceName +
+              " (" +
+              ip +
+              "):\nTrạng thái: " +
+              data.status +
+              "\nLúc: " +
+              data.time,
+          );
+
+          // Tự động tải lại trang sau khi người dùng nhấn OK để cập nhật bảng
+          location.reload();
+        } catch (error) {
+          alert("Lỗi kết nối đến Server Backend!");
+        }
+      }
+    </script>
+  </body>
+</html>

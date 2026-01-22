@@ -15,7 +15,7 @@ def check_ping(hostname):
         print(f"[ERROR] {hostname} is DOWN")
 
 # Danh sách IP Server của bạn trên Web
-list_server = ["172.168.1.1", "172.16.1.14"]
+list_server = ["172.16.1.1", "172.16.1.14"]
 
 print("--- ĐANG KIỂM TRA HỆ THỐNG NETWORK ---")
 for ip in list_server:
